@@ -125,7 +125,7 @@ const listUsers = asyncHandler(async (req, res) => {
 
   const [users, total] = await Promise.all([
     User.find(filter)
-      .select("-passwordHash -__v")
+      .select("-passwordHash -deviceHash -__v")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -143,7 +143,7 @@ const listUsers = asyncHandler(async (req, res) => {
  * GET /api/users/:id — Get one user
  */
 const getUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-passwordHash -__v").lean();
+  const user = await User.findById(req.params.id).select("-passwordHash -deviceHash -__v").lean();
   if (!user) throw new AppError("User not found", 404, "NOT_FOUND");
   return ok(res, user);
 });

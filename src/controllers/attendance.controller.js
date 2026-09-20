@@ -142,7 +142,7 @@ const getByDate = asyncHandler(async (req, res) => {
     throw new AppError("date query parameter (YYYY-MM-DD) is required", 400, "BAD_REQUEST");
   }
   
-  const users = await User.find({ isActive: true, role: "employee" }).select("-passwordHash").lean();
+  const users = await User.find({ isActive: true, role: "employee" }).select("-passwordHash -deviceHash").lean();
   const setting = await Setting.findOne();
   const holiday = await Holiday.findOne({ date: dateStr }).lean();
   const attendances = await Attendance.find({ date: dateStr }).lean();
