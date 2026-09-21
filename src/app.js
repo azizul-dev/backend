@@ -22,8 +22,10 @@ const app = express();
 // Security & network
 // ------------------------------------------------------------------
 
-// Trust the first proxy (needed for accurate req.ip behind nginx/load-balancer)
-app.set("trust proxy", 1);
+// Trust N proxy hops (Render's edge). Change TRUST_PROXY in the Render dashboard
+// without touching code. Verify with /api/debug/ip after deploy.
+const trustProxyHops = Number.parseInt(process.env.TRUST_PROXY ?? "1", 10);
+app.set("trust proxy", Number.isNaN(trustProxyHops) ? 1 : trustProxyHops);
 
 // Security headers
 app.use(helmet());
@@ -84,6 +86,16 @@ app.get("/api/health", (req, res) => {
       env: NODE_ENV,
       timestamp: new Date().toISOString(),
     },
+  });
+});
+
+// TEMPORARY: verify the client IP seen behind Render. DELETE after testing.
+app.get("/api/debug/ip", (req, res) => {
+  res.json({
+    reqIp: req.ip,
+    ips: req.ips,
+    xForwardedFor: req.headers["x-forwarded-for"],
+    socket: req.socket.remoteAddress,
   });
 });
 
