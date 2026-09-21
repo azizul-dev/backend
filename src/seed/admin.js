@@ -14,6 +14,16 @@ const User = require("../models/User");
 const Setting = require("../models/Setting");
 const { SEED_ADMIN_NAME, SEED_ADMIN_PHONE, SEED_ADMIN_PASSWORD } = require("../config/env");
 
+// ── NEW: the seed script needs these; the server does not ──
+if (!SEED_ADMIN_PHONE || !/^\+?\d{10,15}$/.test(SEED_ADMIN_PHONE)) {
+  console.error("[seed] SEED_ADMIN_PHONE must be a real phone number (digits only), e.g. 01712345678");
+  process.exit(1);
+}
+if (!SEED_ADMIN_PASSWORD || SEED_ADMIN_PASSWORD.length < 8) {
+  console.error("[seed] SEED_ADMIN_PASSWORD must be at least 8 characters");
+  process.exit(1);
+}
+
 async function seedAdmin() {
   await connectDB();
 
