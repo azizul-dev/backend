@@ -89,15 +89,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// TEMPORARY: verify the client IP seen behind Render. DELETE after testing.
-app.get("/api/debug/ip", (req, res) => {
-  res.json({
-    reqIp: req.ip,
-    ips: req.ips,
-    xForwardedFor: req.headers["x-forwarded-for"],
-    socket: req.socket.remoteAddress,
-  });
-});
+
 
 // Feature routers
 app.use("/api/auth", require("./routes/auth.routes"));
